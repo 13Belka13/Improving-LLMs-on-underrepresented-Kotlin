@@ -34,20 +34,20 @@ def split_dataset(dataset, split: SplitEnum = SplitEnum.TRAIN):
     return test_data if split == SplitEnum.TEST else train_data
 
 
-def prepare_tokenizer(model_name):
+def prepare_tokenizer(model_name, padding_side='right'):
     logger.info(f"Preparing tokenizer for model: {model_name}")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side=padding_side)
     tokenizer.pad_token = tokenizer.eos_token
     logger.info("Tokenizer prepared successfully")
     return tokenizer
 
 
-def tokenize_dataset(tokenizer, test_data):
+def tokenize_dataset(tokenizer, data):
     logger.info("Tokenizing test dataset")
     dataset_tokenizer = DatasetTokenizer(tokenizer)
-    tokenized_test_dataset = dataset_tokenizer.prepare_dataset(test_data)
-    logger.info("Test dataset tokenized successfully")
-    return tokenized_test_dataset
+    tokenized_dataset = dataset_tokenizer.prepare_dataset(data)
+    logger.info("Dataset tokenized successfully")
+    return tokenized_dataset
 
 
 def load_model(model_name, model_path):
@@ -73,3 +73,4 @@ def evaluate_accuracy(model, tokenizer, tokenized_test_dataset):
     accuracy = accuracy_evaluator.evaluate_accuracy()
     logger.info(f"Accuracy evaluation completed. Accuracy: {accuracy:.4f}")
     return accuracy
+
